@@ -53,20 +53,20 @@ Notice the lines below, we want lines endpoint to be normal to the direction of 
 
 In the figure above, 
 
-Let $$ A = (x0,y0)$$ $$ B = (x1, y1) $$ 
-Vector from A to B is given by, 
-$$ \vec{L} = B - A = (x1 - x0, y1 - y0) $$
+Let <br> $$ A = (x0,y0)$$ <br> $$ B = (x1, y1) $$ <br>
+Vector from A to B is given by, <br>
+$$ \vec{L} = B - A = (x1 - x0, y1 - y0) $$ <br>
 (A slight abuse in notation)<br>
 
-There are two vectors normal to this in 2D Euclidean plane. The counterclock one to the current direction of line is obtained as : 
-$$ \vec{n} = (L.y, -L.x) $$
+There are two vectors normal to this in 2D Euclidean plane. The counterclock one to the current direction of line is obtained as : <br>
+$$ \vec{n} = (L.y, -L.x) $$ <br><br>
 L and $\vec{n}$ are orthogonal to each other as can be easily verified using dot product. 
 
-Normalizing the normal vector $\vec{n}$, 
-$$ \vec{n} = \frac{\vec{n}}{||\vec{n}||} $$
+Normalizing the normal vector $\vec{n}$, <br> <br>
+$$ \vec{n} = \frac{\vec{n}}{||\vec{n}||} $$ <br> <br>
 This gives unit vector perpendicular to the line's direction. 
-Scaling it by half the thickness, 
-$$\vec{n} = \vec{n} * \frac{t}{2}$$
+Scaling it by half the thickness, <br>
+$$\vec{n} = \vec{n} * \frac{t}{2}$$ <br>
 
 Now adding this normal vector to both end and subtracting it to both end, gives four co-ordinates that approximates required thick line. 
 
@@ -81,8 +81,6 @@ namely
 `Triangle(P0,P1,P2)` and `Triangle(P1,P2,P3)`
 
 Now the line looks quite good. At least better than it was previously. 
-
-<insert good_line.png> 
 
 ## Breaking the break 
 ## Achieving Perfection
