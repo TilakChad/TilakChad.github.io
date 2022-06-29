@@ -1,3 +1,7 @@
+<script type="text/javascript" async
+ src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
 # Welcome to Tilak Chad Pages
 
 Greetings, this is my first blog on programming (or anything else). I hope you would enjoy it.
