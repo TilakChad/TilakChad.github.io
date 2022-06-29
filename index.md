@@ -59,7 +59,7 @@ $$ \vec{n} = (L.y, -L.x) $$
 L and $\vec{n}$ are orthogonal to each other as can be easily verified using dot product. 
 
 Normalizing the normal vector $\vec{n}$, 
-\\[\vec{n} = \frac{\vec{n}}{||\vec{n}||} \\]
+$$ \vec{n} = \frac{\vec{n}}{||\vec{n}||} $$
 This gives unit vector perpendicular to the line's direction. 
 Scaling it by half the thickness, 
 $$\vec{n} = \vec{n} * \frac{t}{2}$$
