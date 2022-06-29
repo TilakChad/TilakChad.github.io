@@ -1,3 +1,6 @@
+ <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+ </script
 # Welcome to Tilak Chad Pages
 
 Greetings, this is my first blog on programming (or anything else). I hope you would enjoy it.
