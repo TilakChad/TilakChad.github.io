@@ -1,37 +1,88 @@
-## Welcome to GitHub Pages
+# Welcome to Tilak Chad Pages
 
-You can use the [editor on GitHub](https://github.com/TilakChad/TilakChad.github.io/edit/main/index.md) to maintain and preview the content for your website in Markdown files.
+Greetings, this is my first blog on programming (or anything else). I hope you would enjoy it.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## [Graphics Programming] 
+## Rendering smooth anti-aliased thick lines 
+It sure sounds easy, doesn't it? Its just rendering a line not a world, you say. But drawing perfect smooth (anti-aliased) thick lines is quite a challenging task. 
+We will go through some possible options of rendering lines.
 
-### Markdown
+So let's get started. 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## The obvious way 
+The obvious way to draw thick lines in renderer is to use builtin function to adjust line thickness. 
+In case of OpenGL, it is <br>
+`glLineWidth(width)`, where width is in screen pixel 
+<br>
+DirectX have no such builtin function but don't worry. You aren't alone who can't draw nice lines xD. There's no current GPU that can draw thick lines natively in the hardware. OpenGL fakes the thick line by drawing polygons. 
 
-```markdown
-Syntax highlighted code block
+The output for a typical line with width 15 as drawn by OpenGL is : 
 
-# Header 1
-## Header 2
-### Header 3
+<p align="left">
+	<img src = "./include/gl_line_width.png">
+</p>
 
-- Bulleted
-- List
 
-1. Numbered
-2. List
+Sounds fine, right? 
+Let's see what happens if we try to draw line_strips : 
 
-**Bold** and _Italic_ and `Code` text
+<p align="left">
+	<img src = "./include/not_believe.png">
+</p>
 
-[Link](url) and ![Image](src)
+You mightn't believe it, but these two lines have same width, according to OpenGL, not by us. And yes, they do have, in a sense.  
+The reason why their width looks different, as drawn by OpenGL, is explained in GL docs. If del(X) >= del(Y), 
+`width` pixels are filled along each column. But, since line is tilted, the total length across its normal boundaries is less than its vertical width. Actual experimentation is left to the readers as an exercise. :D  
+
+We will solve this problem. In fact, its quite easy to solve this problem. Even if we fixed the line width somehow, we are still left with another problem. 
+It will be fine for drawing a single line, but while rendering multiple connected line using LINE_STRIP topology, we can clearly see the disconnected lines ruining our beautiful lines. 
+
+
+### Drawing Lines, the easy way 
+
+The first approach to try to render fixed width lines is not drawing lines at all. Instead, using TRIANGLES topology to plot a thin quad that will approximate line quite nicely. 
+Notice the lines below, we want lines endpoint to be normal to the direction of line, rather than being vertical or horizontal. 
+
+<p align="left">
+	<img src = "./include/line_vec.png">
+</p>
+
+In the figure above, 
+let A = (x0,y0) and B = (x1, y1) 
+Then, vector from A to B is given as, 
+L = B - A = (x1 - x0, y1 - y0)
+There are two vectors normal to this in 2D Euclidean plane. The counterclock one to the current direction of line can be obtained as : 
+N = (L.y, -L.x)
+L and N are both orthogonal to each other as can be easily verified using dot product. 
+
+Normalizing the N normal vector, 
+N cap = N / ||N|| 
+This gives unit vector perpendicular to the line's direction. 
+Scaling it by thickness/2, 
+n = (N cap) / 2
+
+Now adding this normal vector to both end and subtracting it to both end, gives four co-ordinates that draws thick line. 
+
+The resulting quad need to be drawn using TRIANGLES topology now. 
+
+<p align="left">
+	<img src = "./include/not_show.png">
+</p>
+
+Two trianges need to be drawn for each line now, 
+namely 
+`Triangle(P0,P1,P2) and Triangle(P1,P2,P3)`
+
+```c
+#include <stdio.h> 
+
+int main(int argc, char** argv)
+{
+  return 0; 
+}
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Blog in progress ... 
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/TilakChad/TilakChad.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### References
