@@ -2,7 +2,7 @@
 
 Greetings, this is my first blog on programming (or anything else). I hope you would enjoy it.
 
-## [Graphics Programming] 
+### [Graphics Programming] 
 ## Rendering smooth anti-aliased thick lines 
 It sure sounds easy, doesn't it? Its just rendering a line not a world, you say. But drawing perfect smooth (anti-aliased) thick lines is quite a challenging task. 
 We will go through some possible options of rendering lines.
@@ -66,12 +66,12 @@ Now adding this normal vector to both end and subtracting it to both end, gives 
 The resulting quad need to be drawn using TRIANGLES topology now. 
 
 <p align="left">
-	<img src = "./include/not_show.png">
+	<img src = "./include/line_show.png">
 </p>
 
 Two trianges need to be drawn for each line now, 
 namely 
-`Triangle(P0,P1,P2) and Triangle(P1,P2,P3)`
+`Triangle(P0,P1,P2)` and `Triangle(P1,P2,P3)`
 
 ```c
 #include <stdio.h> 
@@ -81,7 +81,8 @@ int main(int argc, char** argv)
   return 0; 
 }
 ```
-
+TODO :: use math script 
+TODO :: Complete it :D
 Blog in progress ... 
 
 
