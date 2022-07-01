@@ -53,20 +53,31 @@ Notice the lines below, we want lines endpoint to be normal to the direction of 
 
 In the figure above, 
 
-Let <br> $$ A = (x0,y0)$$ <br> $$ B = (x1, y1) $$ <br>
+Let <br> 
+
+$$ A = (x0,y0) $$
+$$ B = (x1, y1) $$ 
+
 Vector from A to B is given by, <br>
+
 $$ \vec{L} = B - A = (x1 - x0, y1 - y0) $$ <br>
+
 (A slight abuse in notation)<br>
 
 There are two vectors normal to this in 2D Euclidean plane. The counterclock one to the current direction of line is obtained as : <br>
-$$ \vec{n} = (L.y, -L.x) $$ <br><br>
+
+$$ \vec{n} = (L.y, -L.x) $$ <br>
+
 L and $$\vec{n}$$ are orthogonal to each other as can be easily verified using dot product. 
 
-Normalizing the normal vector $$\vec{n}$$, <br> <br>
-$$ \vec{n} = \frac{\vec{n}}{||\vec{n}||} $$ <br> <br>
+Normalizing the normal vector $$\vec{n}$$,
+
+$$ \vec{n} = \frac{\vec{n}}{||\vec{n}||} $$ 
+
 This gives unit vector perpendicular to the line's direction. 
 Scaling it by half the thickness, <br>
-$$\vec{n} = \vec{n} * \frac{t}{2}$$ <br>
+
+$$\vec{n} = \vec{n} * \frac{t}{2}$$
 
 Now adding this normal vector to both end and subtracting it to both end, gives four co-ordinates that approximates required thick line. 
 
@@ -80,7 +91,8 @@ Two trianges need to be drawn for each line now,
 namely 
 `Triangle(P0,P1,P2)` and `Triangle(P1,P2,P3)`
 
-Now the line looks quite good. At least better than it was previously. 
+Now the line looks quite 
+. At least better than it was previously. 
 
 <p align="left">
 	<img src = "./include/good_line.png">
@@ -89,7 +101,7 @@ Now the line looks quite good. At least better than it was previously.
 Its good that we can now draw line with constant width with their endpoints perpendicular to their axis. 
 The quest of drawing perfect line isn't over yet.
 
-We can draw `good` single lines, but while drawing as line strips, we can see the broken artifacts : 
+We can draw good looking single lines, but while drawing as line strips, we can see the broken artifacts : 
 
 With OpenGL's default line drawing, the graph of $$ sin(x) $$ roughly looks : 
 <p align="left">
@@ -105,7 +117,7 @@ Our above implementation yields, quite good lines, yet not how we want :
 
 To remove those gaps at the joint, we need to fill
 <p align = "left"> 
-	<img src = "./mid_calc.png"> 
+	<img src = "./include/mid_calc.png"> 
 </p>
 
 Either magnitude of t or s need to be determined to precisely find the point where the two lines will meet at the tip. 
@@ -115,21 +127,22 @@ cn and dn can be easily determined just like we determined n earlier.
 
 Using Vector geometry, 
 
-$$ \vec{c} + s * \vec{cn} = \vec{d} + t * vec{dn} $$ 
+$$ \vec{c} + s * \vec{cn} = \vec{d} + t * \vec{dn} $$ 
 
 Taking dot product with c on both side, 
 
-$$ <\vec{c},\vec{c}> + s * <\vec{c},\vec{cn}> = <\vec{d},\vec{c}> + t * <\vec{dn},\vec{c}> $$ where <a,b> denotes the inner product of a and b 
+$$ \vec{c}.\vec{c} + s * \vec{c}.\vec{cn} = \vec{d}.\vec{c} + t * \vec{dn}.\vec{c} $$ where \vec{a}.\vec{b} denotes the inner product of a and b 
 
-$$ <\vec{c}, \vec{cn}> = 0, since they are othogonal to each other. $$ 
+$$ <\vec{c}, \vec{cn}> = 0 $$, since they are othogonal to each other.
 
 Rearranging,
 
-$$ t = \frac{<\vec{c}, \vec{c}> - <\vec{c},\vec{d}>} {<\vec{c},\vec{dn}>} 
+$$ t = \frac{\vec{c}.\vec{c} - \vec{c}.\vec{d}} {\vec{c}.\vec{dn}} $$
 
 $$\vec{m} = \vec{d} + t * \vec{dn} $$ 
 
 If this calculation feels too long, you can take 
+
 $$\vec{m} = \frac{\vec{c} + \vec{d}}{2} $$
 
 It might be enough to get close approximation to above point. 
@@ -141,6 +154,8 @@ We now have our lines like we always wanted to.
 	<img src = "./include/fill_gap.png">
 </p>
 
+You might've noticed here, to draw joint you need to have access to direction vector of both lines connecting to it. Instead of passing three co-ordinates for each line, we can just pass direction vector at the first co-ordinate of each line. Details will be explained in the code. 
+
 ## Almost perfect lines 
 The gaps are filled by calculating the point of intersection of line end. So when lines are close to parallel, the gap appears more pointed and away from the lines like : 
 
@@ -150,7 +165,7 @@ The gaps are filled by calculating the point of intersection of line end. So whe
 
 The solution is simple. Just limit the magnitude of $$\vec{m}$$. 
 
-$$\vec{m} = \frac{\vec{m}}{||\vec{m}||} * cutoff_length $$ 
+$$\vec{m} = \frac{\vec{m}}{||\vec{m}||} * cutoffLength $$ 
 
 An extra triangle might need to be emitted for this case to draw pixel perfect line. The edge might appear a little pointed but it looks fine. 
 
@@ -164,15 +179,26 @@ Doesn't look bad, right?
 
 ## Achieving Perfection
 
+Drawing smooth lines 
+
 ```c
 #include <stdio.h> 
 
 int main(int argc, char** argv)
 {
-  return 0; 
+	// Lines co-ordinates and its direction vector stored at first co-ordinate 
+	// (x0,y0,L1.x,L1.y), (x1,y1,L2.x,L2.y) and so on 
+	float lines[] = {
+		530.0f, 100.0f,-3.0f,40.0f,
+		500.0f,500.0f,1.0f,-2.0f,
+		600.0f,300.0f,-4.0f,0.0f, 
+		200.0f, 300.0f, 1.0f, 1.0f
+	};
+	UploadAsLines(lines); 
+	DrawLines(3);
+	return 0; 
 }
 ```
-TODO :: use math script 
 TODO :: Complete it :D
 Blog in progress ... 
 
